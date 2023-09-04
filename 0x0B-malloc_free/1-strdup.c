@@ -9,19 +9,19 @@
  */
 char *_strdup(char *str)
 {
-        char *newstr;
-        unsigned int i = 0;
+	char *newstr;
+	unsigned int i = 0;
 
-        if (str == 0)
-                return (0);
-        while (str[i] != 0)
-                i++;
-        i++;
-        newstr = malloc(sizeof(char) * i);
-        if (newstr == NULL)
-                return (NULL);
-        for (i = 0; str[i] != 0; i++)
-                newstr[i] = str[i];
-        newstr[i] = 0;
-        return (newstr);
+	if (str == 0)
+		return (0);
+	while (str[i] != 0)
+		i++;
+	i++;
+	newstr = malloc(sizeof(char) * i);
+	if (newstr == NULL)
+		return (NULL);
+	for (i = 0; str[i] != 0; i++)
+		newstr[i] = str[i];
+	newstr[i] = 0;
+	return (newstr);
 }

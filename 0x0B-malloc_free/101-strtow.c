@@ -1,47 +1,99 @@
+#include "main.h"
 #include <stdlib.h>
-#include <string.h>
 
-char **strtow(char *str) {
-    if (str == NULL || str[0] == '\0') {
-        return NULL; // Handle NULL or empty input
-    }
+int word_len(char *str);
+int count_words(char *str);
+char **strtow(char *str);
 
-    // Count the number of words
-    int word_count = 0;
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] != ' ' && (i == 0 || str[i - 1] == ' ')) {
-            word_count++;
-        }
-    }
+/**
+ * word_len - Locates the index marking the end of the
+ *            first word contained within a string.
+ * @str: The string to be searched.
+ *
+ * Return: The index marking the end of the initial word pointed to by str.
+ */
+int word_len(char *str)
+{
+	int index = 0, length = 0;
 
-    // Allocate memory for the array of strings
-    char **words = (char **)malloc((word_count + 1) * sizeof(char *));
-    if (words == NULL) {
-        return NULL; // Memory allocation failed
-    }
+	while (*(str + index) && *(str + index) != ' ')
+	{
+		length++;
+		index++;
+	}
 
-    int word_index = 0;
-    char *token = strtok(str, " ");
-    while (token != NULL) {
-        // Allocate memory for each word and copy it
-        words[word_index] = (char *)malloc((strlen(token) + 1) * sizeof(char));
-        if (words[word_index] == NULL) {
-            // Memory allocation failed, free previously allocated memory
-            for (int i = 0; i < word_index; i++) {
-                free(words[i]);
-            }
-            free(words);
-            return NULL;
-        }
-
-        strcpy(words[word_index], token);
-        word_index++;
-        token = strtok(NULL, " ");
-    }
-
-    // Set the last element to NULL to indicate the end of the array
-    words[word_index] = NULL;
-
-    return words;
+	return (length);
 }
+/**
+ * count_words - Counts the number of words contained within a string.
+ * @str: The string to be searched.
+ *
+ * Return: The number of words contained within str.
+ */
+int count_words(char *str)
+{
+	int index = 0, words = 0, length = 0;
 
+	for (index = 0; *(str + index); index++)
+		length++;
+
+	for (index = 0; index < length; index++)
+	{
+		if (*(str + index) != ' ')
+		{
+			words++;
+			index += word_len(str + index);
+		}
+	}
+	return (words);
+}
+/**
+ * strtow - Splits a string into words.
+ * @str: The string to be split.
+ *
+ * Return: If str = NULL, str = "", or the function fails - NULL.
+ *         Otherwise - a pointer to an array of strings (words).
+ */
+char **strtow(char *str)
+{
+	char **strings;
+	int index = 0, words, w, letters, l;
+
+	if (str == NULL || str[0] == '\0')
+		return (NULL);
+
+	words = count_words(str);
+	if (words == 0)
+		return (NULL);
+
+	strings = malloc(sizeof(char *) * (words + 1));
+	if (strings == NULL)
+		return (NULL);
+
+	for (w = 0; w < words; w++)
+	{
+		while (str[index] == ' ')
+			index++;
+
+		letters = word_len(str + index);
+
+		strings[w] = malloc(sizeof(char) * (letters + 1));
+
+		if (strings[w] == NULL)
+		{
+			for (; w >= 0; w--)
+				free(strings[w]);
+
+			free(strings);
+			return (NULL);
+		}
+
+		for (l = 0; l < letters; l++)
+			strings[w][l] = str[index++];
+
+		strings[w][l] = '\0';
+	}
+	strings[w] = NULL;
+
+	return (strings);
+}

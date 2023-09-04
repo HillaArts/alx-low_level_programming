@@ -1,16 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-char **strtow(char *str)
-{
-	if (str == NULL || str[0] == '\0')
-       	{
-		return NULL;
-	}
+char **strtow(char *str) {
+    if (str == NULL || str[0] == '\0') {
+        return NULL; // Handle NULL or empty input
+    }
 
-	int word_count = 0;
-	for (int i = 0; str[i] != '\0'; i++) 
-	{
+    // Count the number of words
+    int word_count = 0;
+    for (int i = 0; str[i] != '\0'; i++) {
         if (str[i] != ' ' && (i == 0 || str[i - 1] == ' ')) {
             word_count++;
         }
@@ -34,14 +32,16 @@ char **strtow(char *str)
             }
             free(words);
             return NULL;
-	}
-	strcpy(words[word_index], token);
-	word_index++;
-	token = strtok(NULL, " ");
-	}
+        }
 
- 	words[word_index] = NULL;
+        strcpy(words[word_index], token);
+        word_index++;
+        token = strtok(NULL, " ");
+    }
 
-	return words;
+    // Set the last element to NULL to indicate the end of the array
+    words[word_index] = NULL;
+
+    return words;
 }
 

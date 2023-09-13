@@ -1,4 +1,32 @@
-i/**
+#include "3-calc.h"
+#include <stdlib.h>
+#include <stdio.h>
+
+/**
+  * op_add - add function
+  * @a: parameter a
+  * @b: parameter b
+  *
+  * Return: success
+  */
+int op_add(int a, int b)
+{
+	return (a + b);
+}
+
+/**
+  * op_sub - subtract function
+  * @a: parameter a
+  * @b: parameter b
+  *
+  * Return: success
+  */
+int op_sub(int a, int b)
+{
+	return (a - b);
+}
+
+/**
   * op_mul - multiplication function
   * @a: parameter a
   * @b: parameter b

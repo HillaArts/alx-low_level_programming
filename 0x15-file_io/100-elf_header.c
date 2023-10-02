@@ -28,9 +28,11 @@
  */
 void print_elf_header_info(Elf64_Ehdr *header)
 {
+	int i;
+
 	printf("ELF Header:\n");
 	printf("	Magic:	");
-	for (int i = 0; i < EI_NIDENT; i++)
+	for (i = 0; i < EI_NIDENT; i++)
 	{
 	printf("%02x ", header->e_ident[i]);
 	}
@@ -155,6 +157,8 @@ int main(int argc, char *argv[])
 	int fd = open(elf_filename, O_RDONLY);
 	struct stat st;
 
+	Elf64_Ehdr header;
+
 	if (argc != 2)
 	{
 	fprintf(stderr, "Usage: %s elf_filename\n", argv[0]);
@@ -174,14 +178,13 @@ int main(int argc, char *argv[])
 	return (98);
 	}
 
-	if (st.st_size < sizeof(Elf64_Ehdr))
+	if ((off_t)st.st_size < (off_t)sizeof(Elf64_Ehdr))
 	{
 	fprintf(stderr, "Error: File is not a valid ELF file.\n");
 	close(fd);
 	return (98);
 	}
 
-	 Elf64_Ehdr header;
 	if (read(fd, &header, sizeof(Elf64_Ehdr)) != sizeof(Elf64_Ehdr))
 	{
 	perror("Error");

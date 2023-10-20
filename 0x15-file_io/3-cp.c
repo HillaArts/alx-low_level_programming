@@ -1,85 +1,53 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include "main.h"
 
-#define BUFFER_SIZE 1024
+#define MAXSIZE 1204
+#define SE STDERR_FILENO
 
 /**
- * error_exit - Handle errors and exit with a specific code and message.
- * @code: The exit code.
- * @message: The error message to display.
- *
- * Description:
- * This function prints an error message to the standard error stream (stderr)
- * using dprintf and then exits the program with the specified exit code.
+ * main - create the copy bash script
+ * @ac: argument count
+ * @av: arguments as strings
+ * Return: 0
  */
-void error_exit(int code, const char *message)
+int main(int ac, char *av[])
 {
-	dprintf(2, "%s\n", message);
-	exit(code);
-}
+	int input_fd, output_fd, istatus, ostatus;
+	char buf[MAXSIZE];
+	mode_t mode;
 
-/**
- * main - Copy the content of one file to another.
- * @argc: The number of command-line arguments.
- * @argv: An array of strings containing the command-line arguments.
- *
- * Return:
- * 0 on successful execution, or the corresponding error code on failure.
- *
- * Description:
- * This program copies the content of one file (specified as file_from) to
- * another
- * file (specified as file_to) while handling various error conditions
- * as follows:
- * - If the number of arguments is incorrect, it exits with code 97.
- * - If the source file cannot be read, it exits with code 98.
- * - If the destination file cannot be written or created, it exits with
- *   code 99.
- * - If there are issues with closing file descriptors, it exits with code 100.
- * The program reads data from the source file in chunks and writes it to the
- * destination file, effectively copying the content.
- */
-
-int main(int argc, char *argv[])
-{
-	const char *file_from = argv[1];
-	const char *file_to = argv[2];
-	int fd_source = open(file_from, O_RDONLY);
-	int fd_dest = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, 0664);
-	char buffer[BUFFER_SIZE];
-	ssize_t bytes_read, bytes_written;
-
-	if (argc != 3)
-	error_exit(97, "Usage: cp file_from file_to");
-
-	if (fd_source == -1)
-	error_exit(98, "Error: Can't read from file");
-
-
-	if (fd_dest == -1)
-	error_exit(99, "Error: Can't write to file");
-
-	while ((bytes_read = read(fd_source, buffer, BUFFER_SIZE)) > 0)
-	bytes_written = write(fd_dest, buffer, bytes_read);
-	if (bytes_written == -1)
-	error_exit(99, "Error: Can't write to file");
-
-
-	if (bytes_read == -1)
-	error_exit(98, "Error: Can't read from file");
-
-
-	if (close(fd_source) == -1)
-	error_exit(100, "Error: Can't close fd");
-
-
-	if (close(fd_dest) == -1)
-	error_exit(100, "Error: Can't close fd");
-
-
+	mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH;
+	if (ac != 3)
+		dprintf(SE, "Usage: cp file_from file_to\n"), exit(97);
+	input_fd = open(av[1], O_RDONLY);
+	if (input_fd == -1)
+		dprintf(SE, "Error: Can't read from file %s\n", av[1]), exit(98);
+	output_fd = open(av[2], O_CREAT | O_WRONLY | O_TRUNC, mode);
+	if (output_fd == -1)
+		dprintf(SE, "Error: Can't write to %s\n", av[2]), exit(99);
+	do {
+		istatus = read(input_fd, buf, MAXSIZE);
+		if (istatus == -1)
+		{
+			dprintf(SE, "Error: Can't read from file %s\n", av[1]);
+			exit(98);
+		}
+		if (istatus > 0)
+		{
+			ostatus = write(output_fd, buf, (ssize_t) istatus);
+			if (ostatus == -1)
+			{
+				dprintf(SE, "Error: Can't write to %s\n", av[2]);
+				exit(99);
+			}
+		}
+	} while (istatus > 0);
+	istatus = close(input_fd);
+	if (istatus == -1)
+		dprintf(SE, "Error: Can't close fd %d\n", input_fd), exit(100);
+	ostatus = close(output_fd);
+	if (ostatus == -1)
+		dprintf(SE, "Error: Can't close fd %d\n", output_fd), exit(100);
 	return (0);
 }
+
 

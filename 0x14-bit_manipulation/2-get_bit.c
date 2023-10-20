@@ -1,10 +1,11 @@
 #include "main.h"
 
 /**
- * get_bit - function.
+ * get_bit - function that retrieved a bit from unsigned
+ * long int number given the index.
  * @n: unsigned lng integer etracting the bit value.
  * @index: unsigned int, index of the it.
- * Return the value of a bit at a given index.
+ * Return: 1
  */
 
 int get_bit(unsigned long int n, unsigned int index)

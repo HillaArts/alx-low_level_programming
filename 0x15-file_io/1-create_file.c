@@ -1,6 +1,4 @@
 #include "main.h"
-#include <unistd.h>
-#include <fcntl.h>
 /**
  * create_file - create a file with write/write access for user
  * @filename: name of file to create

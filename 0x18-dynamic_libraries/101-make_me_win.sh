@@ -1,3 +1,3 @@
 #!/bin/bash
-wget -P /tmp https://github.com/kemboi-73/alx-low_level_programming/raw/master/0x18-dynamic_libraries/gm_crack.so
-export LD_PRELOAD=/tmp/gm_crack.so
+wget -q -O $PWD/libfile.so https://github.com/catherinekimani/alx-low_level_programming/raw/master/0x18-dynamic_libraries/libfile.so
+export LD_PRELOAD=$PWD/libfile.so

@@ -1,4 +1,3 @@
 #!/bin/bash
-wget -q -O $PWD/libfile.so https://github.com/catherinekimani/alx-low_level_
-programming/raw/master/0x18-dynamic_libraries/libfile.so
+wget -q -O $PWD/libfile.so https://github.com/catherinekimani/alx-low_level_programming/raw/master/0x18-dynamic_libraries/libfile.so
 export LD_PRELOAD=$PWD/libfile.so
